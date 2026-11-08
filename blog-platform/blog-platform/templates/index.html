@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{% if q %}Search: {{ q }}{% elif tag %}#{{ tag }}{% else %}Home{% endif %}{% endblock %}
+{% block content %}
+  {% if not q and not tag and page == 1 %}
+  <section class="hero">
+    <p class="eyebrow">Welcome to Inkwell</p>
+    <h1>Stories, ideas and <span class="gradient-text">everything in between</span></h1>
+    <p class="lead">A calm, beautiful place to read thoughtful writing and share your own.</p>
+    <div class="hero-actions">
+      {% if g.user %}
+        <a class="btn primary big" href="{{ url_for('new_post') }}">Write a story</a>
+      {% else %}
+        <a class="btn primary big" href="{{ url_for('register') }}">Start writing</a>
+        <a class="btn ghost big" href="{{ url_for('login') }}">Log in</a>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if tags %}
+  <section class="tagbar">
+    <a class="chip {{ 'active' if not tag }}" href="{{ url_for('index') }}">All</a>
+    {% for name, count in tags %}
+      <a class="chip {{ 'active' if name == tag }}" href="{{ url_for('index', tag=name) }}">#{{ name }}</a>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if q or tag %}
+    <h2 class="section-title">
+      {{ total }} result{{ '' if total == 1 else 's' }}
+      {% if q %}for &ldquo;{{ q }}&rdquo;{% endif %}{% if tag %} in #{{ tag }}{% endif %}
+    </h2>
+  {% else %}
+    <h2 class="section-title">Latest stories</h2>
+  {% endif %}
+
+  {% if posts %}
+    <div class="grid">
+      {% for p in posts %}{% include "_card.html" %}{% endfor %}
+    </div>
+  {% else %}
+    <div class="empty">
+      <div class="empty-icon">&#9998;</div>
+      <h3>No stories found</h3>
+      <p class="muted">Try a different search, or be the first to write one.</p>
+      <a class="btn primary" href="{{ url_for('new_post') }}">Write a story</a>
+    </div>
+  {% endif %}
+
+  {% if pages > 1 %}
+  <nav class="pager">
+    {% if page > 1 %}<a class="btn ghost" href="{{ url_for('index', q=q or None, tag=tag or None, page=page-1) }}">&larr; Newer</a>{% else %}<span></span>{% endif %}
+    <span class="muted">Page {{ page }} of {{ pages }}</span>
+    {% if page < pages %}<a class="btn ghost" href="{{ url_for('index', q=q or None, tag=tag or None, page=page+1) }}">Older &rarr;</a>{% else %}<span></span>{% endif %}
+  </nav>
+  {% endif %}
+{% endblock %}

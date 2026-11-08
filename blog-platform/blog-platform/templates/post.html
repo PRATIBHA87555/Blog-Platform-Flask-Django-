@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<article class="post">
+  <div class="post-banner" style="background: {{ post.id|cover }}"></div>
+  <header class="post-head">
+    <div class="chips">
+      {% for t in post.tags|taglist %}<a class="chip" href="{{ url_for('index', tag=t) }}">#{{ t }}</a>{% endfor %}
+    </div>
+    <h1>{{ post.title }}</h1>
+    <div class="byline">
+      <a class="author" href="{{ url_for('profile', username=post.username) }}">
+        <span class="avatar" style="background: {{ post.username|cover }}">{{ post.username[:1]|upper }}</span>
+        <span><strong>{{ post.username }}</strong><br>
+        <span class="muted">{{ post.created_at|date }} &middot; {{ post.content|reading_time }} min read &middot; {{ post.views }} views</span></span>
+      </a>
+      {% if g.user and g.user.id == post.user_id %}
+      <div class="owner-actions">
+        <a class="btn ghost" href="{{ url_for('edit_post', post_id=post.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" data-confirm="Delete this post for good?">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="btn danger" type="submit">Delete</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="prose">{{ post.content|md }}</div>
+
+  <div class="actions" id="actions">
+    {% if g.user %}
+    <form method="post" action="{{ url_for('like_post', post_id=post.id) }}">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button type="submit" class="like-btn {{ 'liked' if liked }}">&#9829; {{ 'Liked' if liked else 'Like' }} &middot; {{ post.likes }}</button>
+    </form>
+    {% else %}
+    <a class="like-btn" href="{{ url_for('login', next=url_for('post_view', post_id=post.id)) }}">&#9829; {{ post.likes }} &middot; Log in to like</a>
+    {% endif %}
+  </div>
+
+  <section class="comments" id="comments">
+    <h2>{{ comments|length }} comment{{ '' if comments|length == 1 else 's' }}</h2>
+    {% if g.user %}
+    <form class="comment-form" method="post" action="{{ url_for('comment_post', post_id=post.id) }}">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <textarea name="body" rows="3" maxlength="1000" placeholder="Share your thoughts..." required></textarea>
+      <button class="btn primary" type="submit">Post comment</button>
+    </form>
+    {% else %}
+    <p class="muted"><a href="{{ url_for('login', next=url_for('post_view', post_id=post.id)) }}">Log in</a> or <a href="{{ url_for('register') }}">sign up</a> to join the conversation.</p>
+    {% endif %}
+
+    {% for c in comments %}
+    <div class="comment">
+      <span class="avatar sm" style="background: {{ c.username|cover }}">{{ c.username[:1]|upper }}</span>
+      <div class="comment-main">
+        <div class="comment-head">
+          <a href="{{ url_for('profile', username=c.username) }}"><strong>{{ c.username }}</strong></a>
+          <span class="muted">{{ c.created_at|date }}</span>
+          {% if g.user and (g.user.id == c.user_id or g.user.id == post.user_id) %}
+          <form method="post" action="{{ url_for('delete_comment', comment_id=c.id) }}" data-confirm="Remove this comment?">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <button class="link-btn" type="submit">Delete</button>
+          </form>
+          {% endif %}
+        </div>
+        <p>{{ c.body }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+</article>
+{% endblock %}

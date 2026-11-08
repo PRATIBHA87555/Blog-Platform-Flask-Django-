@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }}{% endblock %}
+{% block content %}
+<section class="empty big-empty">
+  <div class="error-code gradient-text">{{ code }}</div>
+  <h2>{{ message }}</h2>
+  <a class="btn primary" href="{{ url_for('index') }}">Back to home</a>
+</section>
+{% endblock %}

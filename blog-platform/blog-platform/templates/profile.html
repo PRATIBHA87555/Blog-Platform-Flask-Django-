@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.username }}{% endblock %}
+{% block content %}
+<section class="profile-head">
+  <span class="avatar xl" style="background: {{ profile.username|cover }}">{{ profile.username[:1]|upper }}</span>
+  <div>
+    <h1>{{ profile.username }}</h1>
+    <p class="muted">{{ profile.bio or 'This writer has not added a bio yet.' }}</p>
+    <p class="muted">Member since {{ profile.created_at|date }}</p>
+  </div>
+  <div class="stat-row">
+    <div class="stat"><strong>{{ stats.posts }}</strong><span>Stories</span></div>
+    <div class="stat"><strong>{{ stats.likes }}</strong><span>Likes</span></div>
+    <div class="stat"><strong>{{ stats.views }}</strong><span>Views</span></div>
+  </div>
+</section>
+
+<h2 class="section-title">Stories by {{ profile.username }}</h2>
+{% if posts %}
+  <div class="grid">{% for p in posts %}{% include "_card.html" %}{% endfor %}</div>
+{% else %}
+  <div class="empty"><div class="empty-icon">&#9998;</div><h3>No stories yet</h3></div>
+{% endif %}
+{% endblock %}

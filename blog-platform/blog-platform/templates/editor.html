@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit post' if post else 'New story' }}{% endblock %}
+{% block content %}
+<section class="editor">
+  <h1>{{ 'Edit your story' if post else 'Write a new story' }}</h1>
+  <form method="post" id="editor-form" data-preview-url="{{ url_for('preview') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <input class="title-input" type="text" name="title" maxlength="120" placeholder="Title" value="{{ form.title }}" required>
+    <input class="tags-input" type="text" name="tags" placeholder="Tags, separated by commas (max 5)" value="{{ form.tags }}">
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="write">Write</button>
+      <button type="button" class="tab" data-tab="preview">Preview</button>
+      <span class="muted tab-hint" id="word-count">0 words</span>
+    </div>
+    <textarea id="content" name="content" rows="16" placeholder="Tell your story... Markdown is supported: **bold**, *italic*, # headings, - lists, > quotes, `code`" required>{{ form.content }}</textarea>
+    <div id="preview-pane" class="prose preview-pane" hidden></div>
+
+    <div class="editor-actions">
+      <button class="btn primary big" type="submit">{{ 'Save changes' if post else 'Publish' }}</button>
+      <a class="btn ghost big" href="{{ url_for('post_view', post_id=post.id) if post else url_for('index') }}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

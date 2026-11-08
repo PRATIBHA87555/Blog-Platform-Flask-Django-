@@ -1,0 +1,19 @@
+<article class="card">
+  <a class="card-cover" href="{{ url_for('post_view', post_id=p.id) }}" style="background: {{ p.id|cover }}">
+    <span class="card-letter">{{ p.title[:1]|upper }}</span>
+  </a>
+  <div class="card-body">
+    <div class="chips">
+      {% for t in p.tags|taglist %}<a class="chip" href="{{ url_for('index', tag=t) }}">#{{ t }}</a>{% endfor %}
+    </div>
+    <h3><a href="{{ url_for('post_view', post_id=p.id) }}">{{ p.title }}</a></h3>
+    <p class="excerpt">{{ p.content|excerpt }}</p>
+    <div class="card-meta">
+      <a class="author" href="{{ url_for('profile', username=p.username) }}">
+        <span class="avatar xs" style="background: {{ p.username|cover }}">{{ p.username[:1]|upper }}</span>{{ p.username }}
+      </a>
+      <span class="muted">{{ p.created_at|date }} &middot; {{ p.content|reading_time }} min read</span>
+    </div>
+    <div class="card-stats muted">&#9829; {{ p.likes }} &nbsp;&middot;&nbsp; &#9993; {{ p.comments }} &nbsp;&middot;&nbsp; {{ p.views }} views</div>
+  </div>
+</article>

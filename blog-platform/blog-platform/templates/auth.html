@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Create account' if mode == 'register' else 'Log in' }}{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-card">
+    <h1>{{ 'Create your account' if mode == 'register' else 'Welcome back' }}</h1>
+    <p class="muted">{{ 'Join Inkwell and start sharing your stories.' if mode == 'register' else 'Log in to write, like and comment.' }}</p>
+    <form method="post">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <label>Username
+        <input type="text" name="username" autocomplete="username" required autofocus
+               {% if mode == 'register' %}minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+"{% endif %}>
+      </label>
+      <label>Password
+        <input type="password" name="password" required minlength="{{ 6 if mode == 'register' else 1 }}"
+               autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}">
+      </label>
+      <button class="btn primary big full" type="submit">{{ 'Sign up' if mode == 'register' else 'Log in' }}</button>
+    </form>
+    {% if mode == 'login' %}
+      <p class="hint">Try the demo account: <code>demo</code> / <code>demo1234</code></p>
+      <p class="muted">New here? <a href="{{ url_for('register') }}">Create an account</a></p>
+    {% else %}
+      <p class="muted">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
