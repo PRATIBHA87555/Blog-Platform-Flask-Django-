@@ -1,1 +1,2 @@
 # Blog-Platform-Flask-Django-
+"COMPANY " : CODETECT IT SOLUTIONS "NAME" : Pratibha Sagar "INTERN ID" : CITS9526 "DOMAIN": PYTHON PROGRAMMING " : 4 WEEKS MENTOR: Neela Santhosh Kumar DESCRITPION of Your project(This is a full blog website called Inkwell, built with Python and Flask. People can sign up, write posts in Markdown with a live preview, and read, like and comment on each other’s posts. It stores everything in a SQLite file, so you don’t need to set up a database.)
